@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Intelligence Dashboard</title>
+</head>
+<body>
+    <nav class="navbar bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand">Navbar</a>
+        <form class="d-flex" role="search" method="POST">
+        <input class="form-control me-2" type="search" placeholder="Search Company Name" aria-label="Search" name="companyName"/>
+        <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+    </div>
+    </nav>
+
+    <p class="text-center mt-3">Welcome to the Company Intelligence Dashboard! Please enter a company name in the search bar above to get started.</p>
+    <h2>{{ company_info["Name"] }}</h2>
+    Company Address: {{ company_info["Address"] }}<br>
+    Company Phone: {{ company_info["Phone"] }}<br>
+    Company Website: {{ company_info["Website"] }}<br>
+    Market Cap: {{ company_info["MarketCap"] }}<br>
+    Stock Price: {{ company_info["StockPrice"] }}<br>
+    
+
+    {% block content %}
+    {% endblock %}
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+</body>
+</html>
