@@ -8,7 +8,7 @@
 <body>
     <nav class="navbar bg-body-tertiary">
     <div class="container-fluid">
-        <a class="navbar-brand">Navbar</a>
+        <a class="navbar-brand">Company Intelligence Dashboard</a>
         <form class="d-flex" role="search" method="POST">
         <input class="form-control me-2" type="search" placeholder="Search Company Name" aria-label="Search" name="companyName"/>
         <button class="btn btn-outline-success" type="submit">Search</button>
@@ -18,15 +18,16 @@
 
     <p class="text-center mt-3">Welcome to the Company Intelligence Dashboard! Please enter a company name in the search bar above to get started.</p>
     <p class="text-center mt-3">Because of the API limitations, only companies based in the US can be searched.</p>
-    <h2>{{ company_info["Name"] or company_info["name"] }}</h2>
-    Company Address: {{ company_info["Address"] or "N/A" }}<br>
-    Country: {{ company_info["Country"] or company_info["country"] }}<br>
-    Company Phone: {{ company_info["Phone"] or company_info['phone'] or "N/A" }}<br>
-    Company Website: <a href="{{ company_info["Website"] or company_info["OfficialSite"] or "N/A" }}" target="_blank">Visit Website</a><br>
-    Industry: {{ company_info["Industry"] or company_info["industry"] or "N/A" }}<br>
-    Market Cap: {{ company_info["MarketCap"] or company_info["MarketCapitalization"] or "N/A"}}<br>
-    Stock Price: {{ company_info["StockPrice"] or "N/A" }}<br>
-    
+    {% if company_info != None: %}
+        <h2>{{ company_info["Name"] or company_info["name"] or "N/A"}}</h2>
+        Company Address: {{ company_info["Address"] or "N/A" }}<br>
+        Country: {{ company_info["Country"] or company_info["country"] or "N/A" }}<br>
+        Company Phone: {{ company_info["Phone"] or company_info['phone'] or "N/A" }}<br>
+        Company Website: <a href="{{ company_info["Website"] or company_info["OfficialSite" or N/A]}}" target="_blank">Visit Website</a><br>
+        Industry: {{ company_info["Industry"] or company_info["industry"] or "N/A" }}<br>
+        Market Cap: {{ company_info["MarketCap"] or company_info["MarketCapitalization"] or "N/A"}}<br>
+        Stock Price: {{ company_info["StockPrice"] or "N/A" }}<br>
+    {% endif %}    
 
     {% block content %}
     {% endblock %}

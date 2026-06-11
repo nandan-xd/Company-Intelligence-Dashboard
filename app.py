@@ -41,6 +41,7 @@ def index():
         # if companyName.lower() == 'google' or companyName.lower() == 'youtube':
         #         companyName = 'Alphabet'
         company_info = get_info(companyName)
+        session['company_info'] = company_info
         # print(company_info)
         if company_info == None:
             return redirect(url_for('error'))
@@ -48,6 +49,7 @@ def index():
 
 @app.route('/error')
 def error():
-     return "Company Not Found"
+     company_info = session.get('company_info')
+     return render_template('error.html', company_info=company_info)
 if __name__ == '__main__':
     app.run(debug=True)
