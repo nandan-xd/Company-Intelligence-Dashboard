@@ -46,8 +46,17 @@ class Users(db.Model):
           self.name = name
           self.password = password
 
+class Search(db.Model):
+     id = db.Column(db.Integer, primary_key=True)
+     name = db.Column(db.ForeignKey(Users.name))
+     company = db.Column(db.String(50))
+
+     def __init__(self, name, company):
+          self.name = name
+          self.company = company
+
 with app.app_context():
-    db.create_all()
+     db.create_all()
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -93,17 +102,33 @@ def index():
           company_info = None
           if request.method == "POST":
                companyName = request.form['companyName']
+               session['companyName'] = companyName
                if companyName.lower() == 'facebook' or companyName.lower() == 'instagram':
                          companyName = 'Meta'
                # if companyName.lower() == 'google' or companyName.lower() == 'youtube':
                #         companyName = 'Alphabet'
                company_info = get_info(companyName)
-               session['company_info'] = company_info
+               session['company_info'] = company_info              
                if company_info == None:
                     return redirect(url_for('error'))
           return render_template('base.html', company_info=company_info)
      else:
           return redirect(url_for('login'))
+
+@app.route('/search-history')
+def searchHistory():
+     username = session.get('username')
+     companyName = session.get('companyName')
+     searchHistory = Search(username, companyName)
+     db.session.add(searchHistory)
+     db.session.commit()
+     user = Search.query.filter_by(name=username).all()
+     companyList = []
+     for i in user:
+          companyList.append(i.company)
+     print(companyList)
+     return render_template('searchHistory.html')
+
 
 @app.route('/error')
 def error():
@@ -116,4 +141,4 @@ def logout():
      return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+     app.run(debug=True)
