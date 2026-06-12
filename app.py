@@ -73,19 +73,23 @@ def login():
           return redirect(url_for('index'))
      else:
           if request.method == 'POST':
+               message = 'Wrong password or username, please check!'
                username = request.form['unm']
                password = request.form['pass']
+               session['username'] = username
                user = Users.query.filter_by(name=username).first()
-               if check_password_hash(user.password, password) and user != None:
-                    return redirect(url_for('index'))
+               if user != None:
+                    if check_password_hash(user.password, password) == True:
+                         return redirect(url_for('index'))
+                    else:
+                         return render_template('login.html', message=message)
                else:
-                    message = 'Wrong password or username, please check!'
                     return render_template('login.html', message=message)
      return render_template('login.html')
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-     if 'user' in session:
+     if 'username' in session:
           company_info = None
           if request.method == "POST":
                companyName = request.form['companyName']
