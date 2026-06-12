@@ -85,20 +85,21 @@ def login():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    if 'user' in session:
-         return redirect(url_for('login'))
-    company_info = None
-    if request.method == "POST":
-        companyName = request.form['companyName']
-        if companyName.lower() == 'facebook' or companyName.lower() == 'instagram':
-                companyName = 'Meta'
-        # if companyName.lower() == 'google' or companyName.lower() == 'youtube':
-        #         companyName = 'Alphabet'
-        company_info = get_info(companyName)
-        session['company_info'] = company_info
-        if company_info == None:
-            return redirect(url_for('error'))
-    return render_template('base.html', company_info=company_info)
+     if 'user' in session:
+          company_info = None
+          if request.method == "POST":
+               companyName = request.form['companyName']
+               if companyName.lower() == 'facebook' or companyName.lower() == 'instagram':
+                         companyName = 'Meta'
+               # if companyName.lower() == 'google' or companyName.lower() == 'youtube':
+               #         companyName = 'Alphabet'
+               company_info = get_info(companyName)
+               session['company_info'] = company_info
+               if company_info == None:
+                    return redirect(url_for('error'))
+          return render_template('base.html', company_info=company_info)
+     else:
+          return redirect(url_for('login'))
 
 @app.route('/error')
 def error():
