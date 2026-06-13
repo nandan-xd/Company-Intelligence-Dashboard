@@ -7,7 +7,7 @@
 </head>
 <body>
     {% for company in companyList: %}
-        {{ company }}
+        <a href="{{ url_for('index', companyName=company) }}">{{ company }}</a> <br>
     {% endfor %}
     <br>
     <a href="{{url_for('index')}}">Home</a> <br>

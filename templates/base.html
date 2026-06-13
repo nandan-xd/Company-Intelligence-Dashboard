@@ -17,7 +17,6 @@
     </div>
     </nav>
 
-    <p class="text-center mt-3">Welcome to the Company Intelligence Dashboard! Please enter a company name in the search bar above to get started.</p>
     <p class="text-center mt-3">Because of the API limitations, only companies based in the US can be searched.</p>
     {% if company_info != None: %}
         <h2>{{ company_info["Name"] or company_info["name"] or "N/A"}}</h2>
