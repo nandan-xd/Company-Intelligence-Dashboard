@@ -103,22 +103,30 @@ def login():
 def index():
      if 'username' in session:
           company_info = None
-          companyName = request.args.get('companyName')
           if request.method == "POST":
                companyName = request.form['companyName']
-          if companyName.lower() == 'facebook' or companyName.lower() == 'instagram':
-                    companyName = 'Meta'
-          if companyName.lower() == 'google' or companyName.lower() == 'youtube':
-                  companyName = 'Alphabet'
-          company_info = get_info(companyName)
-          session['company_info'] = company_info
-          if company_info != None:
-               username = session.get('username')
-               searchHistory = Search(username, companyName)
-               db.session.add(searchHistory)
-               db.session.commit()              
-          if company_info == None:
-               return redirect(url_for('error'))
+               if companyName.lower() == 'facebook' or companyName.lower() == 'instagram':
+                         companyName = 'Meta'
+               if companyName.lower() == 'google' or companyName.lower() == 'youtube':
+                       companyName = 'Alphabet'
+               company_info = get_info(companyName)
+               session['company_info'] = company_info
+               if company_info != None:
+                    username = session.get('username')
+                    searchHistory = Search(username, companyName)
+                    db.session.add(searchHistory)
+                    db.session.commit()              
+               if company_info == None:
+                    return redirect(url_for('error'))
+          else:
+               companyName = request.args.get('companyName')
+               if companyName.lower() == 'facebook' or companyName.lower() == 'instagram':
+                         companyName = 'Meta'
+               if companyName.lower() == 'google' or companyName.lower() == 'youtube':
+                       companyName = 'Alphabet'
+               company_info = get_info(companyName)
+               if company_info == None:
+                    return redirect(url_for('error'))
           return render_template('base.html', company_info=company_info)
      else:
           return redirect(url_for('login'))
