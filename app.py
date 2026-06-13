@@ -62,37 +62,40 @@ with app.app_context():
 def register():
      if request.method == 'POST':
                username = request.form['unm']
+               session['username'] = username
                password = request.form['pass']
                cpassword = request.form['passw']
-               if password == cpassword:
-                    password = generate_password_hash(password)
-                    session['username'] = username
-                    user = Users(username, password)
-                    db.session.add(user)
-                    db.session.commit()
-                    return redirect(url_for('index'))
+               user = Users.query.filter_by(name=username).first()
+               if user != None:
+                    if username == user.name:
+                         message = 'Username already exists, try another username'
+                         return render_template('register.html', message=message)
                else:
-                    message = 'Passwords does not match'
-                    return render_template('register.html', message=message)
+                    if password == cpassword:
+                         password = generate_password_hash(password)
+                         newUser = Users(username, password)
+                         db.session.add(newUser)
+                         db.session.commit()
+                         return redirect(url_for('index'))
+                    else:
+                         message = 'Passwords does not match'
+                         return render_template('register.html', message=message)
      return render_template('register.html')
 
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
-     if 'username' in session:
-          return redirect(url_for('index'))
-     else:
-          if request.method == 'POST':
-               message = 'Wrong password or username, please check!'
+     if request.method == 'POST':
+          if 'Users.query.filter_by(name=username)' in session:
+               return redirect(url_for('index'))
+          else:
                username = request.form['unm']
                password = request.form['pass']
                session['username'] = username
                user = Users.query.filter_by(name=username).first()
-               if user != None:
-                    if check_password_hash(user.password, password) == True:
-                         return redirect(url_for('index'))
-                    else:
-                         return render_template('login.html', message=message)
+               if user != None and check_password_hash(user.password, password) == True:
+                    return redirect(url_for('index'))
                else:
+                    message = 'Wrong password or username, please check!'
                     return render_template('login.html', message=message)
      return render_template('login.html')
 
@@ -108,7 +111,11 @@ def index():
                # if companyName.lower() == 'google' or companyName.lower() == 'youtube':
                #         companyName = 'Alphabet'
                company_info = get_info(companyName)
-               session['company_info'] = company_info              
+               session['company_info'] = company_info
+               username = session.get('username')
+               searchHistory = Search(username, companyName)
+               db.session.add(searchHistory)
+               db.session.commit()              
                if company_info == None:
                     return redirect(url_for('error'))
           return render_template('base.html', company_info=company_info)
@@ -118,17 +125,14 @@ def index():
 @app.route('/search-history')
 def searchHistory():
      username = session.get('username')
-     companyName = session.get('companyName')
-     searchHistory = Search(username, companyName)
-     db.session.add(searchHistory)
-     db.session.commit()
      user = Search.query.filter_by(name=username).all()
      companyList = []
      for i in user:
-          companyList.append(i.company)
-     print(companyList)
-     return render_template('searchHistory.html')
-
+          if i.company not in companyList:
+               companyList.append(i.company)
+          else:
+               pass
+     return render_template('searchHistory.html', companyList=companyList)
 
 @app.route('/error')
 def error():
