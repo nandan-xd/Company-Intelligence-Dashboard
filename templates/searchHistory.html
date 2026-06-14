@@ -6,7 +6,7 @@
     <title>Seach History</title>
 </head>
 <body>
-    {% for company in companyList: %}
+    {% for company in companyList %}
         <a href="{{ url_for('index', companyName=company) }}">{{ company }}</a> <br>
     {% endfor %}
     <br>

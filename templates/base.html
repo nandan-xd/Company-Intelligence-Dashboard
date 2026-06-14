@@ -10,7 +10,7 @@
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ url_for('logout') }}">Logout</a>
         <a class="navbar-brand" href="{{ url_for('searchHistory') }}">Search History</a>
-        <form class="d-flex" role="search" method="POST">
+        <form class="d-flex" role="search" action="#" method="POST">
         <input class="form-control me-2" type="search" placeholder="Search Company Name" aria-label="Search" name="companyName"/>
         <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
