@@ -8,7 +8,7 @@ from datetime import timedelta
 load_dotenv()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('Secret_Key')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
 db = SQLAlchemy(app)
 app.permanent_session_lifetime = timedelta(days = 5)
