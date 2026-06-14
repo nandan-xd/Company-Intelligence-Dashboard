@@ -6,28 +6,95 @@
     <title>Company Intelligence Dashboard</title>
 </head>
 <body>
-    <nav class="navbar bg-body-tertiary">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('logout') }}">Logout</a>
-        <a class="navbar-brand" href="{{ url_for('searchHistory') }}">Search History</a>
-        <form class="d-flex" role="search" action="#" method="POST">
-        <input class="form-control me-2" type="search" placeholder="Search Company Name" aria-label="Search" name="companyName"/>
-        <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">
+            Company Intelligence Dashboard
+        </a>
+
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-light"
+               href="{{ url_for('searchHistory') }}">
+                Search History
+            </a>
+
+            <a class="btn btn-danger"
+               href="{{ url_for('logout') }}">
+                Logout
+            </a>
+        </div>
     </div>
-    </nav>
+</nav>
+
+<div class="container mt-5">
+    <form class="row g-2" method="POST">
+        <div class="col-md-10">
+            <input
+                class="form-control form-control-lg"
+                type="search"
+                placeholder="Search Company Name..."
+                name="companyName"
+                required
+            >
+        </div>
+
+        <div class="col-md-2">
+            <button
+                class="btn btn-success btn-lg w-100"
+                type="submit">
+                Search
+            </button>
+        </div>
+    </form>
+</div>
 
     <p class="text-center mt-3">Because of the API limitations, only companies based in the US can be searched.</p>
-    {% if company_info != None: %}
-        <h2>{{ company_info["Name"] or company_info["name"] or "N/A"}}</h2>
-        Company Address: {{ company_info["Address"] or "N/A" }}<br>
-        Country: {{ company_info["Country"] or company_info["country"] or "N/A" }}<br>
-        Company Phone: {{ company_info["Phone"] or company_info['phone'] or "N/A" }}<br>
-        Company Website: <a href="{{ company_info["Website"] or company_info["OfficialSite" or N/A]}}" target="_blank">Visit Website</a><br>
-        Industry: {{ company_info["Industry"] or company_info["industry"] or "N/A" }}<br>
-        Market Cap: {{ company_info["MarketCap"] or company_info["MarketCapitalization"] or "N/A"}}<br>
-        Stock Price: {{ company_info["StockPrice"] or "N/A" }}<br>
-    {% endif %}    
+    {% if company_info != None %}
+<div class="container mt-5">
+
+    <div class="card shadow-lg">
+        <div class="card-body">
+
+            <h2 class="card-title mb-4">
+                {{ company_info["Name"] or company_info["name"] or "N/A"}}
+            </h2>
+
+            <div class="row">
+
+                <div class="col-md-6">
+                    <p><strong>Country:</strong>
+                    {{ company_info["Country"] or company_info["country"] or "N/A" }}</p>
+
+                    <p><strong>Industry:</strong>
+                    {{ company_info["Industry"] or company_info["industry"] or "N/A" }}</p>
+
+                    <p><strong>Phone:</strong>
+                    {{ company_info["Phone"] or company_info['phone'] or "N/A" }}</p>
+                </div>
+
+                <div class="col-md-6">
+                    <p><strong>Market Cap:</strong>
+                    {{ company_info["MarketCap"] or company_info["MarketCapitalization"] or "N/A" }}</p>
+
+                    <p><strong>Stock Price:</strong>
+                    {{ company_info["StockPrice"] or "N/A" }}</p>
+
+                    <p>
+                        <strong>Website:</strong>
+                        <a href="{{ company_info['Website'] or company_info['OfficialSite'] }}"
+                           target="_blank">
+                            Visit Website
+                        </a>
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endif %}    
 
     {% block content %}
     {% endblock %}
