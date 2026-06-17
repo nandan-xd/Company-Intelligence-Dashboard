@@ -109,10 +109,13 @@ def index():
                     db.session.add(searchHistory)
                     db.session.commit()
                     market_cap = company_info.get('marketCapitalization')
-                    if market_cap >= 1000000:
-                         market_cap = f"${round(market_cap/1000000, 2)} Trillion"
+                    if market_cap != None:
+                         if market_cap >= 1000000:
+                              market_cap = f"${round(market_cap/1000000, 2)} Trillion"
+                         else:
+                              market_cap = f"${round(market_cap/1000, 2)} Billion"
                     else:
-                         market_cap = f"${round(market_cap/1000, 2)} Billion"             
+                         market_cap="N/A"             
                else: 
                     return redirect(url_for('error'))
           else:
@@ -127,10 +130,13 @@ def index():
                          return redirect(url_for('error'))
                     else:
                          market_cap = company_info.get('marketCapitalization')
-                         if market_cap >= 1000000:
-                              market_cap = f"${round(market_cap/1000000, 2)} Trillion"
+                         if market_cap != None:
+                              if market_cap >= 1000000:
+                                   market_cap = f"${round(market_cap/1000000, 2)} Trillion"
+                              else:
+                                   market_cap = f"${round(market_cap/1000, 2)} Billion"
                          else:
-                              market_cap = f"${round(market_cap/1000, 2)} Billion"
+                              market_cap="N/A"
                else: 
                     return render_template('base.html', company_info=company_info, market_cap=market_cap)
           return render_template('base.html', company_info=company_info, market_cap=market_cap)      
