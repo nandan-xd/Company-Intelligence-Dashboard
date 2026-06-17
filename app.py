@@ -35,9 +35,6 @@ def get_info(cN):
          data = response.json()
      else:
          data = config
-     print(config)
-     print(smbl)
-     print(data)
      return data
 
 class Users(db.Model):
