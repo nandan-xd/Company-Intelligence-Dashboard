@@ -19,25 +19,15 @@ def get_info(cN):
      response = requests.get('https://finnhub.io/api/v1/search', params=params)
      config = response.json()
      smbl = config["result"][0]['symbol'] if config["result"] else None
-     print(smbl)
      if smbl is None:
          return None
      params = { 'symbol': smbl, 'token': os.getenv('Finnhub_API_Key') }
      response = requests.get('https://finnhub.io/api/v1/stock/profile2', params=params)
      config = response.json()
      print(config)
-     country = config['country'] if 'country' in config else None 
-     if country is None:
-         return None
      if len(config) == 0:
          return None
-     if country != 'US' or country != 'USA':
-         params = {'function': 'OVERVIEW', 'symbol': smbl, 'apikey': os.getenv('Alpha_Vantage_API_Key')}
-         response = requests.get('https://www.alphavantage.co/query?', params=params)
-         data = response.json()
-     else:
-         data = config
-     print(data)
+     data = config
      return data
 
 class Users(db.Model):

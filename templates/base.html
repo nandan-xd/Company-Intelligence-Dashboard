@@ -56,25 +56,25 @@
         <div class="card-body">
 
             <h2 class="card-title mb-4">
-                {{ company_info["Name"] or company_info["name"] or "N/A"}}
+                {{ company_info["Name"] or "N/A"}}
             </h2>
 
             <div class="row">
 
                 <div class="col-md-6">
                     <p><strong>Country:</strong>
-                    {{ company_info["Country"] or company_info["country"] or "N/A" }}</p>
+                    {{ company_info["Country"] or "N/A" }}</p>
 
                     <p><strong>Industry:</strong>
-                    {{ company_info["Industry"] or company_info["industry"] or "N/A" }}</p>
+                    {{ company_info["Industry"] or "N/A" }}</p>
 
                     <p><strong>Phone:</strong>
-                    {{ company_info["Phone"] or company_info['phone'] or "N/A" }}</p>
+                    {{ company_info["Phone"] or "N/A" }}</p>
                 </div>
 
                 <div class="col-md-6">
                     <p><strong>Market Cap:</strong>
-                    {{ company_info["MarketCap"] or company_info["MarketCapitalization"] or "N/A" }}</p>
+                    {{ company_info["MarketCapitalization"] or "N/A" }}</p>
 
                     <p><strong>Stock Price:</strong>
                     {{ company_info["StockPrice"] or "N/A" }}</p>
