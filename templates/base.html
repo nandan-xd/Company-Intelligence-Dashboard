@@ -83,9 +83,10 @@
                     {% if company_info['marketCapitalization'] > 1000 %}
                         {% market_cap = round(company_info['marketCapitalization']/1000, 2) %}
                         {% market_cap = f"${market_cap} Trillion" %}
+                        {% endif %}
                         <p><strong>Market Cap:</strong>
                         {{ market_cap or "N/A" }}</p>
-                    {% endif %}
+                    
 
                     <p><strong>Stock Exchange:</strong>
                     {{ company_info["exchange"] or "N/A" }}</p>
