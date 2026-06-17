@@ -13,29 +13,32 @@ app.config['SQLALCHEMY_TRACK_MODIFICATION'] = False
 db = SQLAlchemy(app)
 app.permanent_session_lifetime = timedelta(days = 5)
 def get_info(cN):
-    cN = cN.lower()
-    data = None
-    params = { 'q': cN, 'token': os.getenv('Finnhub_API_Key') }
-    response = requests.get('https://finnhub.io/api/v1/search', params=params)
-    config = response.json()
-    smbl = config["result"][0]['symbol'] if config["result"] else None
-    if smbl is None:
+     cN = cN.lower()
+     data = None
+     params = { 'q': cN, 'token': os.getenv('Finnhub_API_Key') }
+     response = requests.get('https://finnhub.io/api/v1/search', params=params)
+     config = response.json()
+     smbl = config["result"][0]['symbol'] if config["result"] else None
+     if smbl is None:
          return None
-    params = { 'symbol': smbl, 'token': os.getenv('Finnhub_API_Key') }
-    response = requests.get('https://finnhub.io/api/v1/stock/profile2', params=params)
-    config = response.json()
-    country = config['country'] if 'country' in config else None 
-    if country is None:
+     params = { 'symbol': smbl, 'token': os.getenv('Finnhub_API_Key') }
+     response = requests.get('https://finnhub.io/api/v1/stock/profile2', params=params)
+     config = response.json()
+     country = config['country'] if 'country' in config else None 
+     if country is None:
          return None
-    if len(config) == 0:
+     if len(config) == 0:
          return None
-    if country != 'US' or country != 'USA':
-        params = {'function': 'OVERVIEW', 'symbol': smbl, 'apikey': os.getenv('Alpha_Vantage_API_Key')}
-        response = requests.get('https://www.alphavantage.co/query?', params=params)
-        data = response.json()
-    else:
+     if country != 'US' or country != 'USA':
+         params = {'function': 'OVERVIEW', 'symbol': smbl, 'apikey': os.getenv('Alpha_Vantage_API_Key')}
+         response = requests.get('https://www.alphavantage.co/query?', params=params)
+         data = response.json()
+     else:
          data = config
-    return data
+     print(config)
+     print(smbl)
+     print(data)
+     return data
 
 class Users(db.Model):
      id = db.Column(db.Integer, primary_key=True)
