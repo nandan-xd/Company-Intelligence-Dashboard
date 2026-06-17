@@ -24,7 +24,6 @@ def get_info(cN):
      params = { 'symbol': smbl, 'token': os.getenv('Finnhub_API_Key') }
      response = requests.get('https://finnhub.io/api/v1/stock/profile2', params=params)
      config = response.json()
-     print(config)
      if len(config) == 0:
          return None
      data = config

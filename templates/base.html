@@ -55,33 +55,44 @@
     <div class="card shadow-lg">
         <div class="card-body">
 
+            <div class="text-center mb-3">
+            <img src="{{ company_info['logo'] }}"
+                 alt="Company Logo"
+                 class="img-fluid"
+                 style="max-height:120px;">
+            </div>
+
             <h2 class="card-title mb-4">
-                {{ company_info["Name"] or "N/A"}}
+                {{ company_info["name"] or "N/A"}}
             </h2>
 
             <div class="row">
 
                 <div class="col-md-6">
                     <p><strong>Country:</strong>
-                    {{ company_info["Country"] or "N/A" }}</p>
+                    {{ company_info["country"] or "N/A" }}</p>
 
                     <p><strong>Industry:</strong>
-                    {{ company_info["Industry"] or "N/A" }}</p>
+                    {{ company_info["finnhubIndustry"] or "N/A" }}</p>
 
                     <p><strong>Phone:</strong>
-                    {{ company_info["Phone"] or "N/A" }}</p>
+                    {{ company_info["phone"] or "N/A" }}</p>
                 </div>
 
                 <div class="col-md-6">
-                    <p><strong>Market Cap:</strong>
-                    {{ company_info["MarketCapitalization"] or "N/A" }}</p>
+                    {% if company_info['marketCapitalization'] > 1000 %}
+                        {% market_cap = round(company_info['marketCapitalization']/1000, 2) %}
+                        {% market_cap = f"${market_cap} Trillion" %}
+                        <p><strong>Market Cap:</strong>
+                        {{ market_cap or "N/A" }}</p>
+                        {% endif %}
 
-                    <p><strong>Stock Price:</strong>
-                    {{ company_info["StockPrice"] or "N/A" }}</p>
+                    <p><strong>Stock Exchange:</strong>
+                    {{ company_info["exchange"] or "N/A" }}</p>
 
                     <p>
                         <strong>Website:</strong>
-                        <a href="{{ company_info['Website'] or company_info['OfficialSite'] }}"
+                        <a href="{{ company_info['weburl'] }}"
                            target="_blank">
                             Visit Website
                         </a>
