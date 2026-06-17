@@ -115,7 +115,7 @@ def index():
                          else:
                               market_cap = f"${round(market_cap/1000, 2)} Billion"
                     else:
-                         market_cap="N/A"             
+                         return redirect(url_for('error'))             
                else: 
                     return redirect(url_for('error'))
           else:
@@ -136,7 +136,7 @@ def index():
                               else:
                                    market_cap = f"${round(market_cap/1000, 2)} Billion"
                          else:
-                              market_cap="N/A"
+                              return redirect(url_for('error'))
                else: 
                     return render_template('base.html', company_info=company_info, market_cap=market_cap)
           return render_template('base.html', company_info=company_info, market_cap=market_cap)      
