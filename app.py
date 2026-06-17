@@ -95,6 +95,7 @@ def login():
 def index():
      if 'username' in session:
           company_info = None
+          market_cap = None
           if request.method == "POST":
                companyName = request.form['companyName']
                if companyName.lower() == 'facebook' or companyName.lower() == 'instagram':
@@ -102,14 +103,14 @@ def index():
                elif companyName.lower() == 'google' or companyName.lower() == 'youtube':
                     companyName = 'Alphabet'
                company_info = get_info(companyName)
-               if company_info['marketCapitalization'] > 1000:
-                    market_cap = round(company_info['marketCapitalization']/1000, 2)
-                    market_cap = f"${market_cap} Trillion"
                if company_info != None:
                     username = session.get('username')
                     searchHistory = Search(username, companyName)
                     db.session.add(searchHistory)
-                    db.session.commit()              
+                    db.session.commit()
+                    if company_info['marketCapitalization'] > 1000:
+                         market_cap = round(company_info['marketCapitalization']/1000, 2)
+                         market_cap = f"${market_cap} Trillion"              
                else: 
                     return redirect(url_for('error'))
           else:
