@@ -108,9 +108,11 @@ def index():
                     searchHistory = Search(username, companyName)
                     db.session.add(searchHistory)
                     db.session.commit()
-                    if company_info['marketCapitalization'] > 1000:
-                         market_cap = round(company_info['marketCapitalization']/1000, 2)
-                         market_cap = f"${market_cap} Trillion"              
+                    market_cap = company_info['marketCapitalization']
+                    if market_cap >= 1000000:
+                         market_cap = f"${round(market_cap/1000000, 2)} Trillion"
+                    else:
+                         market_cap = f"${round(market_cap/1000, 2)} Billion"             
                else: 
                     return redirect(url_for('error'))
           else:
@@ -121,9 +123,11 @@ def index():
                     elif companyName.lower() == 'google' or companyName.lower() == 'youtube':
                          companyName = 'Alphabet'
                     company_info = get_info(companyName)
-                    if company_info['marketCapitalization'] > 1000:
-                        market_cap = round(company_info['marketCapitalization']/1000, 2)
-                        market_cap = f"${market_cap} Trillion"
+                    market_cap = company_info['marketCapitalization']
+                    if market_cap >= 1000000:
+                         market_cap = f"${round(market_cap/1000000, 2)} Trillion"
+                    else:
+                         market_cap = f"${round(market_cap/1000, 2)} Billion"
                     if company_info == None:
                          return redirect(url_for('error'))
                else: 
