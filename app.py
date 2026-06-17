@@ -103,6 +103,7 @@ def index():
                elif companyName.lower() == 'google' or companyName.lower() == 'youtube':
                     companyName = 'Alphabet'
                company_info = get_info(companyName)
+               session['company_info'] = company_info
                if company_info != None:
                     username = session.get('username')
                     searchHistory = Search(username, companyName)
@@ -150,7 +151,8 @@ def searchHistory():
 
 @app.route('/error')
 def error():
-     return render_template('error.html')
+     company_info = session.get('company_info')
+     return render_template('error.html', company_info=company_info)
 
 @app.route('/logout')
 def logout():
