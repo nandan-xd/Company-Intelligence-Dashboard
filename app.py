@@ -143,16 +143,39 @@ def index():
      else:
           return redirect(url_for('login'))
 
+@app.route('/delete', methods=['POST', 'GET'])
+def delete():
+     username = session.get('username')
+     user = Search.query.filter_by(name=username).all()
+     if 'companyList' in session:
+          companyList = session.get('companyList')
+     else:
+          companyList = request.args.get('companyList')
+     companyName = request.args.get('companyName')
+     if companyName in companyList:
+          companyList.remove(companyName)
+     print(companyList)
+     if 'companyList' in session:
+          session['companyList'] = companyList
+          for i in user:
+               if i.company == companyName:
+                    db.session.delete(i)
+                    db.session.commit()
+     return redirect(url_for('searchHistory'))
+
 @app.route('/search-history')
 def searchHistory():
      username = session.get('username')
      user = Search.query.filter_by(name=username).all()
-     companyList = []
+     if 'companyList' in session:
+          companyList = session.get('companyList')
+     else:
+          companyList = []
      for i in user:
           if i.company not in companyList:
                companyList.append(i.company)
-          else:
-               pass
+     if 'companyList' in session:
+          session['companyList'] = companyList
      return render_template('searchHistory.html', companyList=companyList)
 
 @app.route('/error')
