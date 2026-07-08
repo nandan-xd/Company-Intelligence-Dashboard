@@ -152,8 +152,6 @@ def delete():
      else:
           companyList = request.args.get('companyList')
      companyName = request.args.get('companyName')
-     print(companyName)
-     print(companyList)
      if companyName in companyList:
           if companyName != companyList[0]:
                companyList.remove(companyName)
@@ -163,24 +161,22 @@ def delete():
                          db.session.commit()
           else:
                companyList.pop(0)
+               db.session.delete(user[0])
+               db.session.commit()
      if 'companyList' in session:
           session['companyList'] = companyList
      return redirect(url_for('searchHistory'))
 
 @app.route('/search-history')
 def searchHistory():
-     username = session.get('username')
-     user = Search.query.filter_by(name=username).all()
-     if 'companyList' in session:
-          companyList = session.get('companyList')
-     else:
-          companyList = []
-     for i in user:
-          if i.company not in companyList:
-               companyList.append(i.company)
-     if 'companyList' in session:
+     if 'username' in session:
+          username = session.get('username')
+          user = Search.query.filter_by(name=username).all()
+          companyList = [i.company for i in user]
           session['companyList'] = companyList
-     return render_template('searchHistory.html', companyList=companyList)
+          return render_template('searchHistory.html', companyList=companyList)
+     else:
+          return redirect (url_for('login'))
 
 @app.route('/error')
 def error():
