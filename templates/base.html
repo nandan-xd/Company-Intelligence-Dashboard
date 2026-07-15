@@ -107,6 +107,52 @@
     {% block content %}
     {% endblock %}
 
+    {% if company_news_info != None %}
+    <div class="container mt-5">
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <h3 class="card-title mb-4">Latest News Info</h3>
+
+                <div class="row gy-3">
+                    <div class="col-md-6">
+                        <h5 class="mb-2">Headline</h5>
+                        <p>{{ company_news_info["title"] or "N/A" }}</p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h5 class="mb-2">Author</h5>
+                        <p>{{ company_news_info["author"] or "N/A" }}</p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h5 class="mb-2">Published At</h5>
+                        <p>{{ company_news_info["publishedAt"] or "N/A" }}</p>
+                    </div>
+
+                    <div class="col-md-12">
+                        <h5 class="mb-2">Summary</h5>
+                        <p>{{ company_news_info["description"] or "N/A" }}</p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h5 class="mb-2">Source</h5>
+                        <p>{{ company_news_info["source"] or "N/A" }}</p>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h5 class="mb-2">Read More</h5>
+                        <p>
+                            <a href="{{ company_news_info['url'] }}" target="_blank">
+                                {{ company_news_info['url'] or "Visit article" }}
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <footer class="bg-transparent border-top border-secondary-subtle mt-5 py-3">
         <div class="container text-center">
             <a href="https://github.com/nandan-xd/Company-Intelligence-Dashboard" target="_blank"

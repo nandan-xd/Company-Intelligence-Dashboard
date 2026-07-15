@@ -29,6 +29,14 @@ def get_info(cN):
      data = config
      return data
 
+def company_news(cN):
+     cN=cN.lower()
+     config = None
+     params={'q': cN, 'apiKey': os.getenv('News_API_Key')}
+     response = requests.get('https://newsapi.org/v2/everything', params=params)
+     config=response.json()
+     return config
+
 class Users(db.Model):
      id = db.Column(db.Integer, primary_key=True)
      name = db.Column(db.String(50), nullable=False, unique=True)
@@ -103,6 +111,7 @@ def index():
                elif companyName.lower() == 'google' or companyName.lower() == 'youtube':
                     companyName = 'Alphabet'
                company_info = get_info(companyName)
+               company_news_info = company_news(companyName)
                if company_info != None:
                     username = session.get('username')
                     searchHistory = Search(username, companyName)
@@ -126,6 +135,7 @@ def index():
                     elif companyName.lower() == 'google' or companyName.lower() == 'youtube':
                          companyName = 'Alphabet'
                     company_info = get_info(companyName)
+                    company_news_info = company_news(companyName)
                     if company_info == None:
                          return redirect(url_for('error'))
                     else:
@@ -138,8 +148,8 @@ def index():
                          else:
                               return redirect(url_for('error'))
                else: 
-                    return render_template('base.html', company_info=company_info, market_cap=market_cap)
-          return render_template('base.html', company_info=company_info, market_cap=market_cap)      
+                    return render_template('base.html', company_info=company_info, market_cap=market_cap, company_news_info=company_news_info)
+          return render_template('base.html', company_info=company_info, market_cap=market_cap, company_news_info=company_news_info)
      else:
           return redirect(url_for('login'))
 
