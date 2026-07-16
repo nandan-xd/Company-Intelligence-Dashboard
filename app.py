@@ -31,11 +31,12 @@ def get_info(cN):
 
 def company_news(cN):
      cN=cN.lower()
-     config = None
+     data = None
      params={'q': cN, 'apiKey': os.getenv('News_API_Key')}
      response = requests.get('https://newsapi.org/v2/everything', params=params)
      config=response.json()
-     return config
+     data = config
+     return data
 
 class Users(db.Model):
      id = db.Column(db.Integer, primary_key=True)
@@ -104,6 +105,7 @@ def index():
      if 'username' in session:
           company_info = None
           market_cap = None
+          company_news_info = None
           if request.method == "POST":
                companyName = request.form['companyName']
                if companyName.lower() == 'facebook' or companyName.lower() == 'instagram':
