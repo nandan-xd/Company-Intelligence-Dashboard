@@ -4,9 +4,140 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Company Intelligence Dashboard</title>
+
+<style>
+    :root {
+        --sky: #55aee8;
+        --sky-dark: #3f97d3;
+        --orange: #f4a261;
+        --orange-dark: #df8848;
+        --danger: #e98272;
+        --ink: #111111;
+        --page: #ffffff;
+    }
+
+    html, body {
+        background: var(--page) !important;
+        color: var(--ink);
+    }
+
+    /* Clean, consistent square action buttons */
+    .btn {
+        border-radius: 4px !important;
+        border-width: 1px !important;
+        font-weight: 600 !important;
+        letter-spacing: .1px;
+        box-shadow: 4px 5px 0 var(--ink) !important;
+        transition:
+            transform .16s ease,
+            box-shadow .16s ease,
+            background-color .16s ease,
+            border-color .16s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 5px 10px 0 var(--ink) !important;
+    }
+
+    .btn:active {
+        transform: translateY(1px);
+        box-shadow: 2px 2px 0 var(--ink) !important;
+    }
+
+    .btn:focus-visible {
+        outline: 3px solid rgba(85, 174, 232, .35);
+        outline-offset: 3px;
+    }
+
+    /* Matte sky-blue primary actions */
+    .btn-primary,
+    .btn-success {
+        background: var(--sky) !important;
+        border-color: var(--sky) !important;
+        color: #07131d !important;
+    }
+
+    .btn-primary:hover,
+    .btn-success:hover {
+        background: var(--sky-dark) !important;
+        border-color: var(--sky-dark) !important;
+        color: #ffffff !important;
+    }
+
+    /* Matte orange secondary / navigation actions */
+    .btn-warning,
+    .btn-danger {
+        background: var(--orange) !important;
+        border-color: var(--orange) !important;
+        color: #17100a !important;
+    }
+
+    .btn-warning:hover,
+    .btn-danger:hover {
+        background: var(--orange-dark) !important;
+        border-color: var(--orange-dark) !important;
+        color: #ffffff !important;
+    }
+
+    /* Outline buttons keep the same palette */
+    .btn-outline-light,
+    .btn-outline-secondary {
+        background: #ffffff !important;
+        border-color: var(--sky) !important;
+        color: #111111 !important;
+    }
+
+    .btn-outline-light:hover,
+    .btn-outline-secondary:hover {
+        background: var(--sky) !important;
+        border-color: var(--sky) !important;
+        color: #07131d !important;
+    }
+
+    /* Make the dashboard navbar feel like the rest of the UI */
+    .navbar.bg-dark {
+        background: #ffffff !important;
+    }
+
+    .navbar-dark .navbar-brand {
+        color: #111111 !important;
+    }
+
+    /* Subtle square accent for inputs */
+    .form-control {
+        border-radius: 4px !important;
+        border-color: #d7e1e8 !important;
+    }
+
+    .form-control:focus {
+        border-color: var(--sky) !important;
+        box-shadow: 0 0 0 .2rem rgba(85, 174, 232, .18) !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .btn {
+            transition: none !important;
+        }
+        .btn:hover,
+        .btn:active {
+            transform: none !important;
+        }
+    }
+</style>
+
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+    html, body, button, input, textarea, select, .btn {
+        font-family: 'JetBrains Mono', monospace !important;
+    }
+</style>
+
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
     <div class="container">
         <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">
             Company Intelligence Dashboard
@@ -159,9 +290,9 @@
         <div class="container text-center">
             <a href="https://github.com/nandan-xd/Company-Intelligence-Dashboard" target="_blank"
                class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2"
-               style="opacity: .85; transition: opacity .2s ease, transform .2s ease;"
-               onmouseover="this.style.opacity='1'; this.style.transform='translateY(-1px)'"
-               onmouseout="this.style.opacity='.85'; this.style.transform='translateY(0)'">
+               style="opacity: .95;"
+               
+               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
                     <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82A7.65 7.65 0 018 4.58c.68.003 1.36.092 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.64 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.19 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
                 </svg>
