@@ -1,8 +1,8 @@
 # Company Intelligence Dashboard
 
-A full-stack Flask web application that helps users research companies from a single dashboard.
+A full-stack Flask web application for researching companies from a single dashboard.
 
-Instead of manually visiting multiple websites, users can search for a company and view structured company information, manage their account, and revisit previously searched companies through a personalized search history.
+Users can search for a company, view structured company information and recent news, and revisit previous searches through a personalized search history.
 
 ## Live Demo
 
@@ -16,148 +16,79 @@ Instead of manually visiting multiple websites, users can search for a company a
 
 ## Features
 
-### Current Features (V1.0)
-
-#### Company Research
+### 🔍 Company Research
 
 * Search companies by name
-* Automatic company name to ticker resolution
-* Retrieve company information using external APIs
-* Company profile and business information display
+* Automatic company name-to-ticker resolution
+* Retrieve company information through external APIs
+* View company profile and business information
 
-#### Authentication System
+### 📰 Company News
 
-* User Registration
-* User Login
-* Password Hashing using Werkzeug Security
-* Session Management
-* Logout Functionality
+* Fetch recent company-related news
+* Display headlines, sources, authors and publication dates
+* Read the full article through the original source
 
-#### Search History
+### 🔐 Authentication
+
+* User registration and login
+* Password hashing using Werkzeug Security
+* Session management
+* Logout functionality
+* Guest Mode for researching companies without an account
+
+### 📚 Search History
 
 * Store searched companies per user
 * View previous searches
-* Reopen previously searched companies directly from history
+* Reopen previously searched companies
 
-#### Error Handling
+### ⚠️ Error Handling
 
 * Custom error pages
 * Invalid company handling
 * API failure handling
 
-#### Deployment
-
-* Deployed on Render
-* PostgreSQL database hosted on Neon
-* Environment variables used for secure credential management
-
 ---
 
 ## Tech Stack
 
-### Backend
-
-* Python
-* Flask
-
-### Database
-
-* PostgreSQL (Neon)
-* SQLAlchemy ORM
-
-### Authentication
-
-* Werkzeug Security
-* Flask Sessions
-
-### APIs
-
-* Finnhub API
-* Alpha Vantage API
-
-### Deployment
-
-* Render
-
-### Other Tools
-
-* Git
-* GitHub
-* dotenv
+**Backend:** Python, Flask
+**Database:** PostgreSQL, SQLAlchemy
+**Authentication:** Werkzeug Security, Flask Sessions
+**APIs:** Finnhub, NewsAPI
+**Deployment:** Render, Neon
+**Tools:** Git, GitHub, python-dotenv
 
 ---
 
-## Key Concepts Implemented
+## Key Concepts
 
 * REST API Integration
-* JSON Parsing and Processing
-* Database Design
+* JSON Parsing
 * SQLAlchemy ORM
+* PostgreSQL Database
 * User Authentication
 * Password Hashing
 * Session Management
 * Environment Variables
 * Error Handling
-* Cloud Database Integration
-* Full-Stack Deployment
-
----
-
-## Challenges Solved
-
-During development, several real-world issues were encountered and resolved:
-
-* API rate limits
-* Database schema design
-* SQLite to PostgreSQL migration
-* Foreign key relationship issues
-* Password hash storage limitations
-* Environment variable configuration
-* Production deployment debugging
-
----
-
-## Learning Outcomes
-
-This project helped strengthen practical skills in:
-
-* Backend Development
-* Flask Application Development
-* Database Management
-* Authentication Systems
-* API Integration
-* SQLAlchemy
-* PostgreSQL
-* Deployment Workflows
-* Debugging Production Issues
+* Cloud Deployment
 
 ---
 
 ## Future Improvements
 
-### V2
-
-* Saved / Favorite Companies
-* Advanced Company Search
-* Better UI/UX Design
-
-### V3
-
-* Company News Aggregation
-* AI Generated Company Summaries
-* Research Insights and Key Takeaways
-
-### V4
-
-* Company Comparison Dashboard
-* Trend Analysis
-* Interactive Visualizations
-* Export Research Reports
+* ⭐ Saved / Favorite Companies
+* 🤖 AI-generated company summaries
+* 📊 Company comparison
+* 📈 Trend analysis
+* 📄 Research report generation
 
 ---
 
 ## Project Status
 
-✅ Active Development
+🚀 **Active Development**
 
-This project is fully functional and deployed. Future versions will focus on expanding research capabilities and incorporating AI-powered insights.
+The application is fully functional and deployed, with new research and analysis features being added incrementally.
