@@ -102,23 +102,44 @@ def login():
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
-     if 'username' in session:
-          company_info = None
-          market_cap = None
-          company_news_info = None
-          if request.method == "POST":
-               companyName = request.form['companyName']
+     company_info = None
+     market_cap = None
+     company_news_info = None
+     if request.method == "POST":
+          companyName = request.form['companyName']
+          if companyName.lower() == 'facebook' or companyName.lower() == 'instagram':
+               companyName = 'Meta'
+          elif companyName.lower() == 'google' or companyName.lower() == 'youtube':
+               companyName = 'Alphabet'
+          company_info = get_info(companyName)
+          company_news_info = company_news(companyName)
+          if company_info != None:
+               username = session.get('username')
+               searchHistory = Search(username, companyName)
+               db.session.add(searchHistory)
+               db.session.commit()
+               market_cap = company_info.get('marketCapitalization')
+               if market_cap != None:
+                    if market_cap >= 1000000:
+                         market_cap = f"${round(market_cap/1000000, 2)} Trillion"
+                    else:
+                         market_cap = f"${round(market_cap/1000, 2)} Billion"
+               else:
+                    return redirect(url_for('error'))             
+          else: 
+               return redirect(url_for('error'))
+     else:
+          companyName = request.args.get('companyName')
+          if companyName != None:
                if companyName.lower() == 'facebook' or companyName.lower() == 'instagram':
                     companyName = 'Meta'
                elif companyName.lower() == 'google' or companyName.lower() == 'youtube':
                     companyName = 'Alphabet'
                company_info = get_info(companyName)
                company_news_info = company_news(companyName)
-               if company_info != None:
-                    username = session.get('username')
-                    searchHistory = Search(username, companyName)
-                    db.session.add(searchHistory)
-                    db.session.commit()
+               if company_info == None:
+                    return redirect(url_for('error'))
+               else:
                     market_cap = company_info.get('marketCapitalization')
                     if market_cap != None:
                          if market_cap >= 1000000:
@@ -126,34 +147,10 @@ def index():
                          else:
                               market_cap = f"${round(market_cap/1000, 2)} Billion"
                     else:
-                         return redirect(url_for('error'))             
-               else: 
-                    return redirect(url_for('error'))
-          else:
-               companyName = request.args.get('companyName')
-               if companyName != None:
-                    if companyName.lower() == 'facebook' or companyName.lower() == 'instagram':
-                         companyName = 'Meta'
-                    elif companyName.lower() == 'google' or companyName.lower() == 'youtube':
-                         companyName = 'Alphabet'
-                    company_info = get_info(companyName)
-                    company_news_info = company_news(companyName)
-                    if company_info == None:
                          return redirect(url_for('error'))
-                    else:
-                         market_cap = company_info.get('marketCapitalization')
-                         if market_cap != None:
-                              if market_cap >= 1000000:
-                                   market_cap = f"${round(market_cap/1000000, 2)} Trillion"
-                              else:
-                                   market_cap = f"${round(market_cap/1000, 2)} Billion"
-                         else:
-                              return redirect(url_for('error'))
-               else: 
-                    return render_template('base.html', company_info=company_info, market_cap=market_cap, company_news_info=company_news_info)
-          return render_template('base.html', company_info=company_info, market_cap=market_cap, company_news_info=company_news_info)
-     else:
-          return redirect(url_for('login'))
+          else: 
+               return render_template('base.html', company_info=company_info,market_cap=market_cap, company_news_info=company_news_info)
+     return render_template('base.html', company_info=company_info, market_cap=market_cap,company_news_info=company_news_info)
 
 @app.route('/delete', methods=['POST', 'GET'])
 def delete():
