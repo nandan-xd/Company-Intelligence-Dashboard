@@ -148,11 +148,18 @@
                href="{{ url_for('searchHistory') }}">
                 Search History
             </a>
-
-            <a class="btn btn-danger"
-               href="{{ url_for('logout') }}">
-                Logout
-            </a>
+            {% if 'username' in session %}
+                <a class="btn btn-danger"
+                    href="{{ url_for('logout') }}">
+                        Logout
+                </a>
+            {% else %}
+                <a class="btn btn-danger"
+                    href="{{ url_for('login') }}">
+                        Login
+                </a>
+            {% endif %}
+                
         </div>
     </div>
 </nav>
