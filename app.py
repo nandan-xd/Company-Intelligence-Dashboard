@@ -62,9 +62,12 @@ with app.app_context():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
      if request.method == 'POST':
-               username = request.form['unm']
+          username = request.form['unm']
+          password = request.form['pass']
+          if not username or not password:
+               return render_template("register.html", message="Please enter username and password.")
+          else:
                session['username'] = username
-               password = request.form['pass']
                cpassword = request.form['passw']
                user = Users.query.filter_by(name=username).first()
                if user != None:
@@ -86,11 +89,13 @@ def register():
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
      if request.method == 'POST':
+          username = request.form['unm']
+          password = request.form['pass']
+          if not username or not password:
+               return render_template("login.html", message="Please enter username and password.")
           if 'Users.query.filter_by(name=username)' in session:
                return redirect(url_for('index'))
           else:
-               username = request.form['unm']
-               password = request.form['pass']
                session['username'] = username
                user = Users.query.filter_by(name=username).first()
                if user != None and check_password_hash(user.password, password) == True:
