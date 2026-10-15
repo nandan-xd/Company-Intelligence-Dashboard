@@ -4,4 +4,4 @@ requests
 python-dotenv
 Werkzeug
 gunicorn
-psycopg2
+psycopg[binary]
