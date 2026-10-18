@@ -1,47 +1,127 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Company Not Found - Company Intelligence Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Query Unresolved - Company Intelligence</title>
+
+    <!-- Theme Initialization -->
+    <script>
+        const storedTheme = localStorage.getItem('cid-theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', storedTheme);
+    </script>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <!-- Editorial Theme Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
 </head>
 <body>
-<div class="container vh-100 d-flex justify-content-center align-items-center">
-    <div class="card text-center p-5" style="max-width: 32rem; border-radius: 16px;">
-        <div class="display-3 mb-3" style="color: var(--danger);">
-           ⚠
+
+    <!-- Minimal Editorial Navbar with Sun/Moon Switcher on Top-Left -->
+    <nav class="editorial-nav">
+        <div class="editorial-container d-flex justify-content-between align-items-center">
+            <div class="nav-left-group">
+                <button id="theme-toggle-btn" class="theme-switcher-btn" type="button" aria-label="Toggle Theme" title="Toggle Light / Dark Mode">
+                    <!-- Sun Icon (displayed in dark mode) -->
+                    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="4.5" fill="currentColor" fill-opacity="0.15"></circle>
+                        <line x1="12" y1="1.75" x2="12" y2="4.25"></line>
+                        <line x1="12" y1="19.75" x2="12" y2="22.25"></line>
+                        <line x1="4.22" y1="4.22" x2="5.99" y2="5.99"></line>
+                        <line x1="18.01" y1="18.01" x2="19.78" y2="19.78"></line>
+                        <line x1="1.75" y1="12" x2="4.25" y2="12"></line>
+                        <line x1="19.75" y1="12" x2="22.25" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.99" y2="18.01"></line>
+                        <line x1="18.01" y1="5.99" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <!-- Moon Icon (displayed in light mode) -->
+                    <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="currentColor" fill-opacity="0.15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+
+                <a class="brand-anchor" href="{{ url_for('index') }}" title="Company Intelligence Dashboard">
+                    <span class="brand-text">Company Intelligence Dashboard</span>
+                </a>
+            </div>
+
+            <div>
+                <a class="btn btn-outline-light btn-sm" href="{{ url_for('index') }}">
+                    &larr; Workspace
+                </a>
+            </div>
         </div>
-        <h2 class="h3 fw-bold mb-2 text-white">
-            Company Not Found
-        </h2>
-        <p class="text-muted mb-4 fs-5">
-            The company may not be supported by the current API provider or is located outside the US.
-        </p>
-        <div>
-            <a
-                href="{{ url_for('index') }}"
-                class="btn btn-primary btn-lg">
-                &larr; Search Again
+    </nav>
+
+    <!-- Editorial Error Card -->
+    <main class="editorial-container">
+        <div class="editorial-error-card">
+            <h1 class="error-headline-editorial">Company Query Unresolved</h1>
+            <p class="error-copy-editorial">
+                No matching US public market records were found for your search term. The company may be privately owned, traded outside US exchanges, or had a spelling variance.
+            </p>
+
+            <form action="{{ url_for('index') }}" method="POST" class="mb-4">
+                <div class="d-flex gap-2">
+                    <input
+                        type="search"
+                        name="companyName"
+                        class="search-input-editorial"
+                        style="height: 3.2rem;"
+                        placeholder="Search another company (e.g. Apple, Microsoft)..."
+                        required
+                        autofocus
+                    >
+                    <button class="btn btn-primary" type="submit" style="height: 3.2rem; padding-left: 1.5rem; padding-right: 1.5rem;">
+                        Search
+                    </button>
+                </div>
+            </form>
+
+            <div class="d-flex justify-content-center gap-2">
+                <a href="{{ url_for('index') }}" class="btn btn-outline-light btn-sm">
+                    &larr; Return to Workspace
+                </a>
+                <a href="{{ url_for('searchHistory') }}" class="btn btn-outline-light btn-sm">
+                    View History
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Minimal Editorial Footer -->
+    <footer class="editorial-footer-bar">
+        <div class="editorial-container footer-flex-editorial">
+            <a href="https://github.com/nandan-xd/Company-Intelligence-Dashboard" target="_blank" rel="noopener noreferrer" class="github-footer-badge" id="footer-github-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+                <span>GitHub Repository</span>
+                <span class="github-badge-arrow">&nearr;</span>
             </a>
         </div>
-    </div>
-</div>
+    </footer>
 
-<!-- React Bits TargetCursor Script -->
-<script src="{{ url_for('static', filename='js/target-cursor.js') }}"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        if (window.TargetCursor) {
-            window.TargetCursor.init({
-                targetSelector: '.btn, button, a.btn',
-                cursorColor: '#38bdf8',
-                cursorColorOnTarget: '#b3541e'
-            });
-        }
-    });
-</script>
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Theme Switcher Script with React Bits Pixel Transition -->
+    <script src="{{ url_for('static', filename='js/theme-switcher.js') }}"></script>
+
+    <!-- Cursor Spark Click Animation -->
+    <script src="{{ url_for('static', filename='js/spark-click.js') }}"></script>
+
+    <!-- React Bits Crosshair Animation -->
+    <script src="{{ url_for('static', filename='js/crosshair.js') }}"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.Crosshair) {
+                window.Crosshair.init();
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,50 +1,124 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search History - Company Intelligence Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Research History - Company Intelligence</title>
+
+    <!-- Theme Initialization -->
+    <script>
+        const storedTheme = localStorage.getItem('cid-theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', storedTheme);
+    </script>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <!-- Editorial Theme Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
 </head>
 <body>
 
-<div class="container py-5">
+    <!-- Minimal Editorial Navbar with Sun/Moon Switcher on Top-Left -->
+    <nav class="editorial-nav sticky-top">
+        <div class="editorial-container d-flex justify-content-between align-items-center">
+            <div class="nav-left-group">
+                <button id="theme-toggle-btn" class="theme-switcher-btn" type="button" aria-label="Toggle Theme" title="Toggle Light / Dark Mode">
+                    <!-- Sun Icon (displayed in dark mode) -->
+                    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="4.5" fill="currentColor" fill-opacity="0.15"></circle>
+                        <line x1="12" y1="1.75" x2="12" y2="4.25"></line>
+                        <line x1="12" y1="19.75" x2="12" y2="22.25"></line>
+                        <line x1="4.22" y1="4.22" x2="5.99" y2="5.99"></line>
+                        <line x1="18.01" y1="18.01" x2="19.78" y2="19.78"></line>
+                        <line x1="1.75" y1="12" x2="4.25" y2="12"></line>
+                        <line x1="19.75" y1="12" x2="22.25" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.99" y2="18.01"></line>
+                        <line x1="18.01" y1="5.99" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <!-- Moon Icon (displayed in light mode) -->
+                    <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="currentColor" fill-opacity="0.15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
 
-    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-        <div>
-            <h1 class="h2 mb-1" style="color: var(--sky); font-weight: 700;">
-                Search History
-            </h1>
-            <p class="text-muted mb-0">
-                Previously researched companies &bull; Drag down to the shredder slot or click Delete
-            </p>
+                <a class="brand-anchor" href="{{ url_for('index') }}" title="Company Intelligence Dashboard">
+                    <span class="brand-text">Company Intelligence Dashboard</span>
+                    <span class="brand-badge">US Markets</span>
+                </a>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+                <a class="nav-link-editorial active" href="{{ url_for('searchHistory') }}">
+                    <span class="text-roll">
+                        <span>History</span>
+                        <span>History</span>
+                    </span>
+                </a>
+
+                {% if 'username' in session %}
+                    <a class="btn btn-outline-light btn-sm" href="{{ url_for('logout') }}">
+                        <span class="text-roll">
+                            <span>Sign Out</span>
+                            <span>Sign Out</span>
+                        </span>
+                    </a>
+                {% else %}
+                    <a class="btn btn-primary btn-sm" href="{{ url_for('login') }}">
+                        <span class="text-roll">
+                            <span>Sign In</span>
+                            <span>Sign In</span>
+                        </span>
+                    </a>
+                {% endif %}
+            </div>
         </div>
-        <a href="{{ url_for('index') }}" class="btn btn-outline-light">
-            &larr; Back To Dashboard
-        </a>
-    </div>
+    </nav>
 
-    {% if companyList %}
-        <!-- React Bits Paper Shredder Machine -->
+    <!-- Main Container -->
+    <main class="editorial-container py-4">
+
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-baseline mb-4 flex-wrap gap-2 pb-3" style="border-bottom: 1px solid var(--border-subtle);">
+            <div>
+                <div class="d-flex align-items-center gap-3 mb-1">
+                    <h1 class="serif-display" style="font-size: 2.35rem; color: var(--text-primary); text-transform: uppercase;">Research History</h1>
+                    {% if companyList %}
+                    <span class="badge-meta-editorial font-mono fw-bold">
+                        ✦ {{ companyList|length }} Saved
+                    </span>
+                    {% endif %}
+                </div>
+                <p class="text-secondary" style="font-size: 1rem;">
+                    Saved company records &bull; Drag down to slot or click Delete to purge
+                </p>
+            </div>
+            <a href="{{ url_for('index') }}" class="btn btn-outline-light btn-sm">
+                &larr; Workspace
+            </a>
+        </div>
+
+        {% if companyList %}
+        <!-- React Bits Paper Shredder Machine (PROTECTED COMPONENT - UNTOUCHED) -->
         <div class="shredder-wrapper" id="history-shredder">
             <div class="shredder-list-container">
                 <ul class="shredder-list">
                     {% for company in companyList %}
                     <li class="shredder-item-card" data-company="{{ company }}">
                         <div class="d-flex align-items-center gap-3">
-                            <span style="color: var(--ink-subtle); font-size: 1.25rem;" title="Drag down to shred">⋮⋮</span>
+                            <span style="color: var(--text-muted); font-size: 1.25rem; cursor: grab;" title="Drag card down to shred">⋮⋮</span>
                             <div>
                                 <a href="{{ url_for('index', companyName=company) }}" class="text-decoration-none">
-                                    <h3 class="company-name h5 mb-0 fw-bold" style="color: var(--sky);">
+                                    <h3 class="company-name mb-0" style="font-family: var(--font-display); font-size: 1.35rem; font-weight: 700; color: var(--text-primary); text-transform: uppercase;">
                                         {{ company }}
                                     </h3>
                                 </a>
-                                <small class="text-muted">Click to research again</small>
+                                <small class="text-secondary font-mono" style="font-size: 0.82rem;">Click to research</small>
                             </div>
                         </div>
                         <a href="{{ url_for('delete', companyName=company, companyList=companyList) }}"
-                           class="btn btn-danger btn-sm shred-delete-btn">
+                           class="btn btn-danger btn-sm shred-delete-btn"
+                           title="Purge record">
                             Delete
                         </a>
                     </li>
@@ -53,8 +127,8 @@
             </div>
 
             <div class="shredder-slit-zone">
-                <div class="shredder-slit-label">
-                    &darr; Paper Shredder // Drag Card Down or Click Delete to Shred &darr;
+                <div class="shredder-slit-label font-mono">
+                    &darr; Paper Shredder // Drag Card Down to Shred &darr;
                 </div>
                 <div class="shredder-slit-housing">
                     <div class="shredder-slit-bar"></div>
@@ -64,51 +138,58 @@
                 </div>
             </div>
         </div>
-    {% else %}
-        <div class="card p-5 text-center mt-4">
-            <p class="text-muted fs-5 mb-4">No search history found.</p>
-            <div>
-                <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg">Start Researching</a>
-            </div>
+        {% else %}
+        <!-- Editorial Empty State -->
+        <div class="editorial-welcome-view text-center">
+            <h2 class="welcome-title-editorial" style="font-size: 2.5rem;">Archive is Empty</h2>
+            <p class="welcome-lead-editorial mx-auto">
+                No company records have been saved yet. Search for companies from the workspace to automatically record them in your archive.
+            </p>
+            <a href="{{ url_for('index') }}" class="btn btn-primary">
+                Open Workspace &rarr;
+            </a>
         </div>
-    {% endif %}
+        {% endif %}
 
-</div>
+    </main>
 
-<!-- Bootstrap Bundle JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Minimal Editorial Footer -->
+    <footer class="editorial-footer-bar">
+        <div class="editorial-container footer-flex-editorial">
+            <a href="https://github.com/nandan-xd/Company-Intelligence-Dashboard" target="_blank" rel="noopener noreferrer" class="github-footer-badge" id="footer-github-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+                <span>GitHub Repository</span>
+                <span class="github-badge-arrow">&nearr;</span>
+            </a>
+        </div>
+    </footer>
 
-<!-- React Bits TargetCursor Script -->
-<script src="{{ url_for('static', filename='js/target-cursor.js') }}"></script>
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- React Bits Shredder Machine Script -->
-<script src="{{ url_for('static', filename='js/shredder.js') }}"></script>
+    <!-- Theme Switcher Script with React Bits Pixel Transition -->
+    <script src="{{ url_for('static', filename='js/theme-switcher.js') }}"></script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // 1. TargetCursor on buttons
-        if (window.TargetCursor) {
-            window.TargetCursor.init({
-                targetSelector: '.btn, button, a.btn, .shred-delete-btn',
-                cursorColor: '#38bdf8',
-                cursorColorOnTarget: '#b3541e',
-                spinDuration: 2.2,
-                size: 34
-            });
-        }
+    <!-- Cursor Spark Click Animation -->
+    <script src="{{ url_for('static', filename='js/spark-click.js') }}"></script>
 
-        // 2. Initialize Shredder Machine
-        const shredderWrapper = document.getElementById('history-shredder');
-        if (shredderWrapper && window.ShredderMachine) {
-            window.ShredderMachine.init(shredderWrapper, {
-                feedSpeed: 200,
-                stripWidth: 12,
-                fallHeight: 170,
-                curl: 1.1
-            });
-        }
-    });
-</script>
+    <!-- React Bits Shredder Machine Script (Untouched) -->
+    <script src="{{ url_for('static', filename='js/shredder.js') }}"></script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const shredderWrapper = document.getElementById('history-shredder');
+            if (shredderWrapper && window.ShredderMachine) {
+                window.ShredderMachine.init(shredderWrapper, {
+                    feedSpeed: 200,
+                    stripWidth: 12,
+                    fallHeight: 170,
+                    curl: 1.1
+                });
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,6 +1,6 @@
 /**
  * LatticeLoader - Pure Vanilla HTML/CSS port of React Bits LatticeLoader component
- * Displays a 3x3 or 4x4 cellular wave animation with live stopwatch timer.
+ * Displays a 3x3 cellular wave animation in solid white with live timer.
  */
 
 (function (global) {
@@ -14,13 +14,16 @@
   };
 
   function createLatticeLoader(options) {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    const defaultColor = isLight ? '#121212' : '#ffffff';
+
     const opts = Object.assign(
       {
-        label: 'Searching Intelligence...',
+        label: 'Analyzing Company Intelligence...',
         pattern: 'orbit',
-        color: '#ea580c',
-        cellSize: 10,
-        gap: 4,
+        color: defaultColor,
+        cellSize: 12,
+        gap: 5,
         showTimer: true,
       },
       options || {}
@@ -45,6 +48,7 @@
       cell.style.width = `${opts.cellSize}px`;
       cell.style.height = `${opts.cellSize}px`;
       cell.style.backgroundColor = opts.color;
+      cell.style.borderRadius = '2px';
       if (val !== null) {
         cell.style.animationDelay = `${val * step}ms`;
       } else {
@@ -57,8 +61,6 @@
     // Label
     const textEl = document.createElement('span');
     textEl.className = 'll-label';
-    textEl.style.fontWeight = '600';
-    textEl.style.color = '#f3f4f6';
     textEl.textContent = opts.label;
 
     container.appendChild(gridEl);
@@ -68,7 +70,7 @@
     let timerInterval = null;
     if (opts.showTimer) {
       const timerEl = document.createElement('span');
-      timerEl.className = 'll-timer';
+      timerEl.className = 'll-timer font-mono';
       timerEl.textContent = '0.0s';
       container.appendChild(timerEl);
 
@@ -101,13 +103,14 @@
       document.body.appendChild(overlay);
     }
 
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
     const card = overlay.querySelector('.lattice-overlay-card');
     card.innerHTML = '';
     const loader = createLatticeLoader({
-      label: label || 'Fetching Company Financials & News...',
+      label: label || 'Querying Market Terminal & News Wire...',
       pattern: 'orbit',
-      color: '#ea580c',
-      cellSize: 12,
+      color: isLight ? '#121212' : '#ffffff',
+      cellSize: 13,
       gap: 5,
       showTimer: true,
     });

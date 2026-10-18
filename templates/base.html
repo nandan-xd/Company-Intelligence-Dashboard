@@ -1,191 +1,412 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Company Intelligence Dashboard</title>
+    <title>{% if company_info %}{{ company_info.name }} ({{ company_info.ticker }}) - {% endif %}Company Intelligence</title>
+
+    <!-- Theme Initialization (prevents flash of wrong theme) -->
+    <script>
+        const storedTheme = localStorage.getItem('cid-theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', storedTheme);
+    </script>
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
-    <!-- Global Matte ColorHunt Theme (Obsidian, Burnt Copper, Crimson, Sky Blue) -->
+    <!-- Unified Editorial Theme -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg sticky-top">
-    <div class="container">
-        <!-- Main Heading Restored: Clean, Bold, Slightly Bigger -->
-        <a class="navbar-brand fw-bold" href="{{ url_for('index') }}" style="font-size: 1.55rem; letter-spacing: -0.02em; color: var(--orange);">
-            Company Intelligence Dashboard
-        </a>
 
-        <div class="d-flex gap-3 align-items-center">
-            <a class="btn btn-outline-light"
-               href="{{ url_for('searchHistory') }}">
-                Search History
-            </a>
-            {% if 'username' in session %}
-                <a class="btn btn-danger"
-                    href="{{ url_for('logout') }}">
-                        Logout
+    <!-- Minimalist Global Navbar with Sun/Moon Theme Switcher on Top-Left -->
+    <nav class="editorial-nav sticky-top">
+        <div class="editorial-container d-flex justify-content-between align-items-center">
+            
+            <!-- Left Group: Sun/Moon Theme Switcher + Brand -->
+            <div class="nav-left-group">
+                <button id="theme-toggle-btn" class="theme-switcher-btn" type="button" aria-label="Toggle Theme" title="Toggle Light / Dark Mode">
+                    <!-- Sun Icon (displayed in dark mode) -->
+                    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="4.5" fill="currentColor" fill-opacity="0.15"></circle>
+                        <line x1="12" y1="1.75" x2="12" y2="4.25"></line>
+                        <line x1="12" y1="19.75" x2="12" y2="22.25"></line>
+                        <line x1="4.22" y1="4.22" x2="5.99" y2="5.99"></line>
+                        <line x1="18.01" y1="18.01" x2="19.78" y2="19.78"></line>
+                        <line x1="1.75" y1="12" x2="4.25" y2="12"></line>
+                        <line x1="19.75" y1="12" x2="22.25" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.99" y2="18.01"></line>
+                        <line x1="18.01" y1="5.99" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <!-- Moon Icon (displayed in light mode) -->
+                    <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 24 24" fill="currentColor" fill-opacity="0.15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+
+                <a class="brand-anchor" href="{{ url_for('index') }}" title="Company Intelligence Dashboard">
+                    <span class="brand-text">Company Intelligence Dashboard</span>
+                    <span class="brand-badge">US Markets</span>
                 </a>
-            {% else %}
-                <a class="btn btn-danger"
-                    href="{{ url_for('login') }}">
-                        Login
+            </div>
+
+            <!-- Right Group: Navigation & Auth Status -->
+            <div class="d-flex align-items-center gap-3">
+                <a class="nav-link-editorial" href="{{ url_for('searchHistory') }}">
+                    <span class="text-roll">
+                        <span>History</span>
+                        <span>History</span>
+                    </span>
                 </a>
-            {% endif %}
-        </div>
-    </div>
-</nav>
 
-<div class="container mt-5 pt-2">
-    <form id="search-form" class="row g-3" method="POST">
-        <div class="col-md-9 col-lg-10">
-            <input
-                class="form-control form-control-lg"
-                type="search"
-                placeholder="Search Company Name (e.g. Apple, Microsoft, Tesla)..."
-                name="companyName"
-                id="company-search-input"
-                required
-            >
-        </div>
-
-        <div class="col-md-3 col-lg-2">
-            <button
-                class="btn btn-primary btn-lg w-100"
-                type="submit"
-                id="search-submit-btn">
-                Search
-            </button>
-        </div>
-    </form>
-</div>
-
-    <p class="text-center text-muted mt-3">Because of API limitations, only companies based in the US can be searched.</p>
-
-    {% if company_info != None %}
-<div class="container mt-4">
-
-    <div class="card">
-        <div class="card-body p-5">
-
-            <div class="mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
-                {% if company_info['logo'] %}
-                <img src="{{ company_info['logo'] }}"
-                     alt="Company Logo"
-                     class="img-fluid rounded bg-white p-2"
-                     style="max-height:90px; object-fit: contain; border: 2px solid var(--border-card);">
+                {% if 'username' in session %}
+                    <a class="btn btn-outline-light btn-sm" href="{{ url_for('logout') }}">
+                        <span class="text-roll">
+                            <span>Sign Out</span>
+                            <span>Sign Out</span>
+                        </span>
+                    </a>
+                {% else %}
+                    <a class="btn btn-primary btn-sm" href="{{ url_for('login') }}">
+                        <span class="text-roll">
+                            <span>Sign In</span>
+                            <span>Sign In</span>
+                        </span>
+                    </a>
                 {% endif %}
-                <span class="badge" style="background-color: var(--sky-subtle); color: var(--sky); border: 2px solid var(--sky); font-size: 1.05rem; padding: 0.5rem 1rem;">
-                    {{ company_info["ticker"] or company_info["exchange"] or "NASDAQ/NYSE" }}
-                </span>
             </div>
-
-            <h2 class="card-title h1 mb-4" style="color: var(--orange) !important;">
-                {{ company_info["name"] or "N/A"}}
-            </h2>
-
-            <div class="row gy-3 fs-5">
-                <div class="col-md-6">
-                    <p class="mb-3"><strong style="color: var(--sky);">Country:</strong> {{ company_info["country"] or "N/A" }}</p>
-                    <p class="mb-3"><strong style="color: var(--sky);">Industry:</strong> {{ company_info["finnhubIndustry"] or "N/A" }}</p>
-                    <p class="mb-3"><strong style="color: var(--sky);">Phone:</strong> {{ company_info["phone"] or "N/A" }}</p>
-                </div>
-
-                <div class="col-md-6">
-                    <p class="mb-3"><strong style="color: var(--sky);">Market Cap:</strong> {{ market_cap or "N/A" }}</p>
-                    <p class="mb-3"><strong style="color: var(--sky);">Stock Exchange:</strong> {{ company_info["exchange"] or "N/A" }}</p>
-                    <p class="mb-3">
-                        <strong style="color: var(--sky);">Website:</strong>
-                        <a href="{{ company_info['weburl'] }}" target="_blank" rel="noopener noreferrer">
-                            Visit Website &rarr;
-                        </a>
-                    </p>
-                </div>
-            </div>
-
         </div>
-    </div>
+    </nav>
 
-</div>
-{% endif %}    
+    <!-- Main Workspace Container -->
+    <main class="editorial-container">
 
-    {% block content %}
-    {% endblock %}
+        <!-- Search Area with Looping Words & Slide Commit -->
+        <section class="search-editorial-wrapper">
+            <div class="search-editorial-header">
+                <h1 class="search-editorial-heading">
+                    <span>Research</span> <span id="heading-rotating-text" class="rotating-words-box">Intelligence</span>
+                </h1>
+                <p class="search-editorial-subtitle">Access structured US company dossiers, live market capitalization, and editorial news wire.</p>
+            </div>
 
-    {% if company_news_info != None %}
-        {% for articles in company_news_info.articles %}
-            <div class="container mt-4">
-                <div class="card">
-                    <div class="card-body p-4 p-md-5">
-                        <h3 class="card-title h4 mb-3" style="color: var(--sky) !important;">
-                            Latest News
-                        </h3>
+            <form id="search-form" action="{{ url_for('index') }}" method="POST">
+                <div class="search-editorial-bar">
+                    <!-- Search Input Field -->
+                    <div class="search-input-container">
+                        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                        <input
+                            class="search-input-editorial"
+                            type="search"
+                            placeholder="Search by company name or ticker symbol (e.g. Apple, Microsoft, NVDA)..."
+                            name="companyName"
+                            id="company-search-input"
+                            autocomplete="off"
+                            autofocus
+                            required
+                        >
+                    </div>
 
-                        <div class="row gy-3">
-                            <div class="col-md-12">
-                                <h4 class="h3 mb-3 text-white">{{ articles["title"] or "N/A" }}</h4>
-                                <p class="text-muted mb-3">
-                                    <span><strong>Source:</strong> {{ articles["source"]["name"] or "N/A" }}</span>
-                                    {% if articles["author"] %} &bull; <span><strong>By:</strong> {{ articles["author"] }}</span>{% endif %}
-                                    {% if articles["publishedAt"] %} &bull; <span>{{ articles["publishedAt"][:10] }}</span>{% endif %}
-                                </p>
-                                <p class="fs-5 mb-4" style="color: #cbd5e1;">{{ articles["description"] or "N/A" }}</p>
-                                <a href="{{ articles['url'] }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light">
-                                    Read Full Article &rarr;
-                                </a>
-                            </div>
+                    <!-- Simple Cool Search Action Button -->
+                    <button type="submit" id="search-submit-btn" class="search-action-btn" aria-label="Search Company">
+                        <span class="text-roll">
+                            <span>Research &rarr;</span>
+                            <span>Research &rarr;</span>
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Company Research Profile (When Company is Found) -->
+        {% if company_info %}
+        <article class="company-dossier-article">
+
+            <!-- 1. Focal Point Identity Header: Logo, Big Title with Text Roll, Badges -->
+            <header class="company-hero-header">
+                <div class="company-hero-left">
+                    {% if company_info['logo'] %}
+                    <div class="company-logo-editorial">
+                        <img src="{{ company_info['logo'] }}" alt="{{ company_info['name'] }} logo" onerror="this.parentElement.style.display='none'">
+                    </div>
+                    {% endif %}
+                    <div>
+                        <h2 class="company-headline-title">
+                            <span class="text-roll">
+                                <span>{{ company_info['name'] or 'N/A' }}</span>
+                                <span>{{ company_info['name'] or 'N/A' }}</span>
+                            </span>
+                        </h2>
+                        <div class="company-hero-tags">
+                            {% if company_info['ticker'] %}
+                            <span class="badge-ticker-editorial">{{ company_info['ticker'] }}</span>
+                            {% endif %}
+                            {% if company_info['exchange'] %}
+                            <span class="badge-meta-editorial">{{ company_info['exchange'] }}</span>
+                            {% endif %}
+                            {% if company_info['finnhubIndustry'] %}
+                            <span class="badge-meta-editorial">{{ company_info['finnhubIndustry'] }}</span>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
-    {% endif %}
 
-    <footer class="bg-transparent border-top border-secondary-subtle mt-5 py-4">
-        <div class="container text-center">
-            <a href="https://github.com/nandan-xd/Company-Intelligence-Dashboard" target="_blank" rel="noopener noreferrer"
-               class="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
-                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82A7.65 7.65 0 018 4.58c.68.003 1.36.092 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.64 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.19 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                <div class="d-flex align-items-center gap-2 pt-2">
+                    {% if company_info['weburl'] %}
+                    <a href="{{ company_info['weburl'] }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-light btn-sm">
+                        <span class="text-roll">
+                            <span>Official Website &nearr;</span>
+                            <span>Official Website &nearr;</span>
+                        </span>
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('searchHistory') }}" class="btn btn-outline-light btn-sm">
+                        <span class="text-roll">
+                            <span>Archive</span>
+                            <span>Archive</span>
+                        </span>
+                    </a>
+                </div>
+            </header>
+
+            <!-- 2. Standout Primary Metric: Market Capitalization -->
+            <section class="primary-metric-editorial">
+                <div class="primary-metric-caption">Market Capitalization (USD)</div>
+                <div class="primary-metric-value">{{ market_cap or "N/A" }}</div>
+            </section>
+
+            <!-- 3. Structured Company Facts -->
+            <section class="company-facts-section">
+                <h3 class="facts-section-title">Company Profile &amp; Exchange Details</h3>
+                <div class="facts-editorial-grid">
+                    <div class="fact-item-block">
+                        <span class="fact-label-text">Stock Exchange</span>
+                        <span class="fact-value-text">{{ company_info["exchange"] or "N/A" }}</span>
+                    </div>
+
+                    <div class="fact-item-block">
+                        <span class="fact-label-text">Industry Sector</span>
+                        <span class="fact-value-text">{{ company_info["finnhubIndustry"] or "N/A" }}</span>
+                    </div>
+
+                    <div class="fact-item-block">
+                        <span class="fact-label-text">Country of Origin</span>
+                        <span class="fact-value-text">{{ company_info["country"] or "United States" }}</span>
+                    </div>
+
+                    <div class="fact-item-block">
+                        <span class="fact-label-text">Corporate Telephone</span>
+                        <span class="fact-value-text mono">{{ company_info["phone"] or "N/A" }}</span>
+                    </div>
+
+                    {% if company_info.get('ipo') %}
+                    <div class="fact-item-block">
+                        <span class="fact-label-text">Initial Public Offering</span>
+                        <span class="fact-value-text mono">{{ company_info['ipo'] }}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if company_info.get('shareOutstanding') %}
+                    <div class="fact-item-block">
+                        <span class="fact-label-text">Shares Outstanding</span>
+                        <span class="fact-value-text mono">{{ company_info['shareOutstanding'] }}M</span>
+                    </div>
+                    {% endif %}
+
+                    {% if company_info['weburl'] %}
+                    <div class="fact-item-block">
+                        <span class="fact-label-text">Corporate Website</span>
+                        <span class="fact-value-text">
+                            <a href="{{ company_info['weburl'] }}" target="_blank" rel="noopener noreferrer">
+                                {{ company_info['weburl'].replace('https://', '').replace('http://', '').rstrip('/') }} &nearr;
+                            </a>
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+            </section>
+
+            <!-- 4. Related Editorial News Wire (With Crisp High-Contrast Dates & Visibility) -->
+            {% if company_news_info and company_news_info.articles %}
+            <section class="editorial-news-section">
+                <div class="news-section-header-editorial">
+                    <h3 class="news-section-title-editorial">Market Coverage &amp; Recent Stories</h3>
+                    <span class="text-secondary font-mono fw-bold" style="font-size: 0.95rem;">
+                        ✦ {{ company_news_info.articles|length }} Stories
+                    </span>
+                </div>
+
+                <div>
+                    {% for article in company_news_info.articles %}
+                    <article class="news-article-row-editorial">
+                        <div class="news-article-source-row">
+                            <span class="news-publisher-name">{{ article["source"]["name"] if article["source"] else "Market Wire" }}</span>
+                            {% if article["publishedAt"] %}
+                            <span>&bull;</span>
+                            <span class="news-date-visible">{{ article["publishedAt"][:10] }}</span>
+                            {% endif %}
+                            {% if article["author"] %}
+                            <span>&bull;</span>
+                            <span class="text-secondary font-medium">{{ article["author"] }}</span>
+                            {% endif %}
+                        </div>
+
+                        <a href="{{ article['url'] }}" target="_blank" rel="noopener noreferrer" class="news-headline-editorial">
+                            {{ article["title"] or "Untitled Article" }}
+                        </a>
+
+                        {% if article["description"] %}
+                        <p class="news-summary-editorial">
+                            {{ article["description"] }}
+                        </p>
+                        {% endif %}
+
+                        <a href="{{ article['url'] }}" target="_blank" rel="noopener noreferrer" class="news-read-link">
+                            Read full story &nearr;
+                        </a>
+                    </article>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+        </article>
+        {% elif not company_info %}
+        <!-- Calm Editorial Initial Workspace -->
+        <section class="editorial-welcome-view">
+            <h2 class="welcome-title-editorial">Company Research &amp; Market Intelligence</h2>
+            <p class="welcome-lead-editorial">
+                Query US publicly traded companies to inspect live valuations, institutional listing details, corporate sector classifications, and recent market editorial coverage.
+            </p>
+            <div class="d-flex gap-3 flex-wrap">
+                <button class="btn btn-outline-light" onclick="quickQuery('Apple')">
+                    <span class="text-roll">
+                        <span>Apple Inc. &rarr;</span>
+                        <span>Apple Inc. &rarr;</span>
+                    </span>
+                </button>
+                <button class="btn btn-outline-light" onclick="quickQuery('Microsoft')">
+                    <span class="text-roll">
+                        <span>Microsoft Corp. &rarr;</span>
+                        <span>Microsoft Corp. &rarr;</span>
+                    </span>
+                </button>
+                <button class="btn btn-outline-light" onclick="quickQuery('NVIDIA')">
+                    <span class="text-roll">
+                        <span>NVIDIA Corp. &rarr;</span>
+                        <span>NVIDIA Corp. &rarr;</span>
+                    </span>
+                </button>
+            </div>
+        </section>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+
+    </main>
+
+    <!-- React Bits FolderFloat Component (Bottom-Left Corner) -->
+    <div id="quick-folder-float"></div>
+
+    <!-- Minimal Editorial Footer -->
+    <footer class="editorial-footer-bar">
+        <div class="editorial-container footer-flex-editorial">
+            <a href="https://github.com/nandan-xd/Company-Intelligence-Dashboard" target="_blank" rel="noopener noreferrer" class="github-footer-badge" id="footer-github-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
                 </svg>
-                GitHub Repository
+                <span>GitHub Repository</span>
+                <span class="github-badge-arrow">&nearr;</span>
             </a>
         </div>
     </footer>
 
-    <!-- Bootstrap Bundle JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- React Bits TargetCursor Script (Sole Cursor, Snapping Brackets) -->
-    <script src="{{ url_for('static', filename='js/target-cursor.js') }}"></script>
+    <!-- Theme Switcher Script with React Bits Pixel Transition -->
+    <script src="{{ url_for('static', filename='js/theme-switcher.js') }}"></script>
 
-    <!-- React Bits LatticeLoader Script (Request loading overlay) -->
+    <!-- Cursor Spark Click Animation -->
+    <script src="{{ url_for('static', filename='js/spark-click.js') }}"></script>
+
+    <!-- React Bits Rotating Heading Animation -->
+    <script src="{{ url_for('static', filename='js/rotating-text.js') }}"></script>
+
+    <!-- React Bits Lattice Loader (Solid White) -->
     <script src="{{ url_for('static', filename='js/lattice-loader.js') }}"></script>
 
+    <!-- React Bits Folder Float (Bottom-Left Quick Search) -->
+    <script src="{{ url_for('static', filename='js/folder-float.js') }}"></script>
+
     <script>
+        function quickQuery(companyName) {
+            const input = document.getElementById('company-search-input');
+            const form = document.getElementById('search-form');
+            if (input && form) {
+                input.value = companyName;
+                if (window.LatticeLoader) {
+                    window.LatticeLoader.showSearchLoader('Analyzing ' + companyName + ' Intelligence...');
+                }
+                form.submit();
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
-            // 1. TargetCursor: Sole cursor with Sky Blue reticle
-            if (window.TargetCursor) {
-                window.TargetCursor.init({
-                    targetSelector: '.btn, button, a.btn, input[type="submit"]',
-                    cursorColor: '#38bdf8',
-                    cursorColorOnTarget: '#b3541e',
-                    spinDuration: 2.2,
-                    size: 34
+            const searchForm = document.getElementById('search-form');
+            const searchInput = document.getElementById('company-search-input');
+
+            // 1. Initialize Rotating Text on Main Heading
+            const rotatingHeading = document.getElementById('heading-rotating-text');
+            if (rotatingHeading && window.RotatingText) {
+                window.RotatingText.init(rotatingHeading, {
+                    words: ['Intelligence', 'Equities', 'Financials', 'Valuations', 'Market Wire'],
+                    interval: 2800
                 });
             }
 
-            // 2. LatticeLoader: Search submission overlay
-            const searchForm = document.getElementById('search-form');
-            if (searchForm && window.LatticeLoader) {
-                searchForm.addEventListener('submit', function() {
-                    const inputVal = document.getElementById('company-search-input')?.value || 'Company';
-                    window.LatticeLoader.showSearchLoader('Analyzing ' + inputVal + ' Intelligence...');
+            // 2. Initialize Folder Float at bottom-left corner with Company Names
+            const folderContainer = document.getElementById('quick-folder-float');
+            if (folderContainer && window.FolderFloat) {
+                window.FolderFloat.init(folderContainer, {
+                    items: [
+                        { label: 'Apple Inc.', value: 'Apple' },
+                        { label: 'Microsoft Corp.', value: 'Microsoft' },
+                        { label: 'NVIDIA Corp.', value: 'NVIDIA' },
+                        { label: 'Alphabet Inc.', value: 'Alphabet' },
+                        { label: 'Amazon.com Inc.', value: 'Amazon' },
+                        { label: 'Tesla Inc.', value: 'Tesla' }
+                    ],
+                    label: 'Quick Search',
+                    sublabel: '6 Equities',
+                    onSelect: function (val) {
+                        quickQuery(val);
+                    }
                 });
             }
+
+            // 3. Form submit trigger (Enter key or standard submit)
+            if (searchForm) {
+                searchForm.addEventListener('submit', function (e) {
+                    const queryVal = searchInput ? searchInput.value.trim() : '';
+                    if (window.LatticeLoader && queryVal) {
+                        window.LatticeLoader.showSearchLoader('Analyzing ' + queryVal + ' Intelligence...');
+                    }
+                });
+            }
+
+            // 4. Keyboard shortcut '/'
+            window.addEventListener('keydown', function (e) {
+                if (e.key === '/' && document.activeElement !== searchInput) {
+                    if (searchInput) {
+                        e.preventDefault();
+                        searchInput.focus();
+                        searchInput.select();
+                    }
+                }
+            });
         });
     </script>
 </body>
