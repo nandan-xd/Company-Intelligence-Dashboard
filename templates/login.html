@@ -139,27 +139,10 @@
     <!-- Theme Switcher Script with React Bits Pixel Transition -->
     <script src="{{ url_for('static', filename='js/theme-switcher.js') }}"></script>
 
-    <!-- Cursor Spark Click Animation -->
+    Cursor Spark Click Animation
     <script src="{{ url_for('static', filename='js/spark-click.js') }}"></script>
 
     <!-- React Bits Crosshair Animation -->
     <script src="{{ url_for('static', filename='js/crosshair.js') }}"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Initialize Crosshair Cursor
-            if (window.Crosshair) {
-                window.Crosshair.init();
-            }
-
-            const toggle = document.getElementById('toggle-login-pass');
-            const pass = document.getElementById('login-pass');
-            if (toggle && pass) {
-                toggle.addEventListener('click', function () {
-                    pass.type = pass.type === 'password' ? 'text' : 'password';
-                });
-            }
-        });
-    </script>
 </body>
 </html>
